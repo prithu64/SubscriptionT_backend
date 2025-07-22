@@ -1,7 +1,7 @@
 import { User } from "../models/user.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
-import { signupValidationSchema } from "../validators/user.validation.js"
+import { signupValidationSchema,signinValidationSchema } from "../validators/user.validation.js"
 
 const makeToken = async(_id) =>{
     try {
@@ -62,5 +62,36 @@ const signup = async(req,res) =>{
   }
 }
 
+const signin = async(req,res)=>{
+const {username,password} = req.body;
+ 
+if(!username || !password){
+  throw new ApiError(400,"All fields are required")
+}
 
-export {signup}
+const {success} = signinValidationSchema.safeParse(req.body)
+if(!success){
+  throw new ApiError(400,"input validation failed")
+}
+
+const user = await User.findOne({username})
+
+if(!user){
+  throw new ApiError(400,"User does")
+}
+
+const passwordMatch = await user.isPasswordCorrect(password)
+
+if(passwordMatch){
+  const token = user.generateAccessToken(user._id)
+  return res.json(
+    new ApiResponse(200,{token: token},"Signed in successfully")
+  )
+}else{
+  throw new ApiError(400,"wrong password")
+}
+
+}
+
+
+export {signup,signin}
