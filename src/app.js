@@ -10,8 +10,8 @@ app.use(express.json())
 import userRouter from './routes/user.routes.js';
 import subsRouter from './routes/subscription.routes.js'
 
-app.use("api/v1/user",userRouter)
-app.use("api/v1/subs",subsRouter)
+app.use("/api/v1/user",userRouter)
+app.use("/api/v1/subs",subsRouter)
 
 export { app }
 

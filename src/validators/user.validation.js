@@ -1,0 +1,9 @@
+import {z} from "zod";
+
+const signupValidationSchema = z.object({
+    username: z.string().min(4,"username must be at least 4 character"),
+    email : z.string().email(),
+    password : z.string().min(6,"password must be atleast 6 characters")
+})
+
+export {signupValidationSchema}
