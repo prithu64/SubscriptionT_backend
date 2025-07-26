@@ -90,8 +90,9 @@ if(passwordMatch){
 }else{
   throw new ApiError(400,"wrong password")
 }
-
 }
+
+
 
 
 export {signup,signin}
