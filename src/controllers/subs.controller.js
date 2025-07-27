@@ -2,8 +2,6 @@ import { makeSubsSchema,updateSubsSchema } from "../validators/subs.validator.js
 import {ApiError} from "../utils/ApiError.js"
 import { Subscription } from "../models/subscription.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { User } from "../models/user.model.js";
-import { success } from "zod";
 
 const makeSubscription =async(req,res)=>{
   
@@ -14,10 +12,10 @@ const makeSubscription =async(req,res)=>{
     throw new ApiError(402,"Input validation failed")
   }
 
-  //const subsID = req.userID;
+   subsID = req.userID;
   
   const createdSub = await Subscription.create({
-    subsID : body.subsID,
+    subsID : subsID,
     subs_name : body.subs_name,
     payment_plan: body.payment_plan,
     payment_amount : body.payment_amount,
@@ -72,6 +70,9 @@ const deleteSubscription = async(req,res)=>{
     throw new ApiError(500,"Error while deleting")
   }
 }
+
+
+
 
 
 export {makeSubscription,updateSubscription,getSubscription,deleteSubscription}

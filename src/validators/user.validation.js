@@ -11,4 +11,10 @@ const signinValidationSchema = z.object({
     password  : z.string().min(6)
 })
 
-export {signupValidationSchema,signinValidationSchema}
+const updateValidationSchema = z.object({
+    username: z.string().min(4,"username must be at least 4 character").optional(),
+    email : z.string().email().optional(),
+    password : z.string().min(6,"password must be atleast 6 characters").optional()
+})
+
+export {signupValidationSchema,signinValidationSchema,updateValidationSchema}

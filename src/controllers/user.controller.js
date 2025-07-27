@@ -1,7 +1,7 @@
 import { User } from "../models/user.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
-import { signupValidationSchema,signinValidationSchema } from "../validators/user.validation.js"
+import { signupValidationSchema,signinValidationSchema, updateValidationSchema} from "../validators/user.validation.js"
 
 const makeToken = async(_id) =>{
     try {
@@ -92,7 +92,37 @@ if(passwordMatch){
 }
 }
 
+const updateuser = async(req,res)=>{
+
+  const body = req.body;
+  const {success} = updateValidationSchema.safeParse(body);
+
+  if(!success){
+    throw new ApiError(400,"Input validation failed")
+  }
+
+  const updatedUser = await User.findOneAndUpdate({_id : req.userID},{
+    username : body.username,
+    password : body.password,
+    email : body.email
+  })
+
+ if(!updatedUser){
+  throw new ApiError(407,"user update failed")
+ }else{
+  return res.json(new ApiResponse(200,"user updated successfully"))
+ }
+}
+
+const deleteuser = async(req,res)=>{
+  try {
+    await User.findByIdAndDelete({_id : req.userID})
+    localStorage.setItem("token","")
+    return res.json(new ApiResponse(200,"user deleted successfully"))
+  } catch (error) {
+    throw new ApiError(500,"failed to delete user")
+  }
+}
 
 
-
-export {signup,signin}
+export {signup,signin,updateuser,deleteuser}
