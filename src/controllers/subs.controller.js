@@ -12,12 +12,21 @@ const makeSubscription =async(req,res)=>{
     throw new ApiError(402,"Input validation failed")
   }
 
-   subsID = req.userID;
-  
+   const subsID = req.userID;
+
+   const sub = await Subscription.findOne({
+    subsID : subsID,
+    subs_name : body.subs_name
+   })
+
+   if(sub){
+     throw new ApiError(400,"Subscription already exist")
+   }
+
   const createdSub = await Subscription.create({
     subsID : subsID,
     subs_name : body.subs_name,
-    payment_plan: body.payment_plan,
+    payment_plan: body.payment_plan.toLowerCase(),
     payment_amount : body.payment_amount,
     payment_date : new Date(body.payment_date)
   })
@@ -25,7 +34,8 @@ const makeSubscription =async(req,res)=>{
   if(!createdSub){
     throw new ApiError(500, "Error while creating subcription")
   }
-
+  
+  console.log("sub created")
   return res.json(new ApiResponse(200,{success : true},"Subscription created successfully"))
 
 }
@@ -51,13 +61,14 @@ const updateSubscription = async(req,res) =>{
 
 }
 
-const getSubscription = async(req,res)=>{
-  const  AllSubs = await Subscription.find();
+const getSubscriptions = async(req,res)=>{
+  const subsID = req.userID;
+  const  AllSubs = await Subscription.find({subsID});
 
   if(!AllSubs){
     throw new ApiError(500,"Subscription fetch error")
   }else{
-    return res.json(new ApiResponse(200,{subs : AllSubs},"Subscription fetched successfully"))
+    return res.json(new ApiResponse(200,AllSubs,"Subscription fetched successfully"))
   }
 }
 
@@ -75,4 +86,4 @@ const deleteSubscription = async(req,res)=>{
 
 
 
-export {makeSubscription,updateSubscription,getSubscription,deleteSubscription}
+export {makeSubscription,updateSubscription,getSubscriptions,deleteSubscription}

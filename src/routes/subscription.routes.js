@@ -1,5 +1,5 @@
 import express from 'express';
-import { makeSubscription,updateSubscription,getSubscription,deleteSubscription } from '../controllers/subs.controller.js';
+import { makeSubscription,updateSubscription,getSubscriptions,deleteSubscription } from '../controllers/subs.controller.js';
 import { authMiddleware } from '../middlewares/middleware.js';
 
 const router = express.Router();
@@ -14,7 +14,8 @@ router.route("/updatesub/:id").post(
 )
 
 router.route("/getsubs").get(
-   getSubscription
+   authMiddleware,
+   getSubscriptions
 )
 
 router.route("/deletesub/:id").delete(
